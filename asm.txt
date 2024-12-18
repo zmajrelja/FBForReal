@@ -126,6 +126,7 @@ LD x7 arrSize
 SUB x8 x3 x7
 JL updateL5
 AND x3 x8 x8
+
 updateL5:
 LD x9 cap
 ADD x9 x9 #1
@@ -141,12 +142,14 @@ ST x1 currTime
 XOR x1 x1 x1
 
 XOR x2 x2 x2
-updateloop:
 LD x3 cap
+LD x5 tail
+SUB x5 x5 #1
+updateloop:
+
 SUB x4 x2 x3
 JZ updateL6
-LD x5 tail
-ADD x5 x5 x2
+ADD x5 x5 #1
 LD x6 arrSize
 SUB x6 x5 x6
 JL updateL7
@@ -190,13 +193,16 @@ JMP retupdate
 colision:
 
 XOR x1 x1 x1
+LD x2 cap
+LD x5 tail
+SUB x5 x5 #1
 colisionloop:
 
-LD x2 cap
+
 SUB x3 x1 x2
 JZ colisionL1
-LD x4 tail
-ADD x5 x4 x1
+
+ADD x5 x5 #1
 LD x6 arrSize
 SUB x6 x5 x6
 JL colisionL2
@@ -213,7 +219,7 @@ SUB x9 x9 x8
 JGE colisionL3
 
 LD x9 pwidth
-SUB x9 x7 x9
+ADD x9 x7 x9
 SUB x9 x9 x8
 JLE colisionL3
 
