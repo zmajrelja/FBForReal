@@ -1,0 +1,40 @@
+const:
+bx = 100
+ba = 3
+bheight = 60
+bwidth = 100
+MIN_SPEED = -30
+MAX_SPEED = 20
+
+arrSize = 50
+pwidth = 50
+pheight = 300
+pv = 10
+createTime = 50
+
+screenHeight = 600
+screenWidht = 800
+
+one = 1
+five = 5
+threehundred = 300
+
+var:
+by = 300
+byp = 300
+bv = MIN_SPEED
+
+head = 0
+tail = 0
+cap = 0
+
+currTime = 5
+
+spaceC = 0
+spaceP = 0
+
+playing = 0
+startGame = 1
+
+px = [arrSize]
+py = [arrSize]

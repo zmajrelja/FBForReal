@@ -1,0 +1,635 @@
+SLD prekid
+
+//black screen
+
+LD x1 dbrush
+XOR x2 x2 x2
+LD x3 screenWidht
+LD x4 screenHeight
+ADD x5 x1 #3
+
+blackscreen1:
+LD x6 gpus
+AND x6 x6 #1
+JZ blackscreen1
+
+ST x2 gpudata
+ST x1 gpudata
+
+blackscreen2:
+LD x6 gpus
+AND x6 x6 #1
+JZ blackscreen2
+
+ST x5 gpudata
+ST x2 gpudata
+ST x2 gpudata
+ST x3 gpudata
+ST x4 gpudata
+
+main:
+
+//delay
+
+LD x1 startGame
+AND x1 x1 x1
+JZ playL
+XOR x2 x2 x2
+ST x1 playing
+ST x2 startGame
+JMP restart
+retrestart:
+
+playL:
+LD x1 playing
+AND x1 x1 x1
+JZ main // bilo je JNZ a treba da se vrati AKO je false (0)
+
+
+JMP update
+retupdate:
+
+JMP colision
+retcolision:
+
+JMP draw
+retdraw:
+
+JMP main
+
+update:
+LD x1 spaceC
+AND x1 x1 x1
+JZ updateL
+LD x2 spaceP
+AND x2 x2 x2
+JG updateL
+LD x2 MIN_SPEED
+ST x2 bv
+
+updateL:
+ST x1 spaceP
+XOR x1 x1 x1
+ST x1 cpaceC
+
+LD x1 by
+ST x1 byp
+
+LD x2 bv
+LD x3 ba
+
+ADD x2 x2 x3
+
+LD x3 MAX_SPEED
+SUB x4 x2 x3
+JLE updateL1
+AND x2 x3 x3
+
+updateL1:
+ADD x1 x1 x2
+JG updateL2
+XOR x2 x2 x2
+XOR x1 x1 x1
+
+updateL2:
+LD x3 bheight
+LD x4 screenHeight
+
+ADD x5 x1 x3
+SUB x5 x5 x4
+JL updateL3
+XOR x2 x2 x2
+SUB x1 x4 x3
+
+updateL3:
+ST x1 by
+ST x2 bv
+
+LD x1 currTIme
+SUB x1 x1 #1
+JG updateL4
+LD x2 px
+LD x3 head
+LD x4 screenWidht
+ADD x2 x2 x3
+ST x4 x2
+LD x5 py
+ADD x5 x5 x3
+
+JMP rand
+retran:
+
+ST x6 x5
+
+ADD x3 x3 #1
+LD x7 arrSize
+SUB x8 x3 x7
+JL updateL5
+AND x3 x8 x8
+updateL5:
+LD x9 cap
+ADD x9 x9 #1
+LD x1 createTime
+
+ST x3 head
+ST x9 cap
+
+updateL4:
+
+ST x1 currTime
+
+XOR x1 x1 x1
+
+XOR x2 x2 x2
+updateloop:
+LD x3 cap
+SUB x4 x2 x3
+JZ updateL6
+LD x5 tail
+ADD x5 x5 x2
+LD x6 arrSize
+SUB x6 x5 x6
+JL updateL7
+AND x5 x6 x6
+updateL7:
+
+LD x6 px
+ADD x6 x6 x5
+LD x7 x6
+LD x8 pv
+SUB x7 x7 x8
+ST x7 x6
+
+LD x9 pwidth
+ADD x7 x7 x8
+ADD x7 x7 x9
+JG updateL8
+ADD x1 x1 #1
+updateL8:
+
+ADD x2 x2 #1
+JMP updateloop
+updateL6:
+
+AND x1 x1 x1
+JZ updateL9
+LD x2 tail
+SUB x3 x3 x1
+ADD x2 x2 x1
+LD x4 arrSize
+SUB x4 x2 x4
+JL updateL10
+AND x2 x4 x4
+updateL10:
+
+ST x3 cap
+ST x2 tail
+updateL9:
+JMP retupdate
+
+colision:
+
+XOR x1 x1 x1
+colisionloop:
+
+LD x2 cap
+SUB x3 x1 x2
+JZ colisionL1
+LD x4 tail
+ADD x5 x4 x1
+LD x6 arrSize
+SUB x6 x5 x6
+JL colisionL2
+AND x5 x6 x6
+colisionL2:
+
+LD x6 px
+ADD x6 x6 x5
+LD x7 x6
+LD x8 bx
+LD x9 bwidth
+SUB x9 x7 x9
+SUB x9 x9 x8
+JGE colisionL3
+
+LD x9 pwidth
+SUB x9 x7 x9
+SUB x9 x9 x8
+JLE colisionL3
+
+LD x6 py
+ADD x6 x6 x5
+LD x7 x6
+
+LD x8 by
+SUB x9 x8 x7
+JLE colisionL4
+
+LD x10 bheight
+LD x11 pheight
+ADD x9 x9 x10
+SUB x9 x9 x11
+JGE colisionL4
+
+JMP colisionL3
+
+colisionL4:
+
+XOR x1 x1 x1
+ST x1 playing
+JMP colisionL1
+
+
+colisionL3:
+ADD x1 x1 #1
+JMP colisionloop
+colisionL1:
+JMP retcolision
+
+
+restart:
+XOR x1 x1 x1
+restartloop:
+LD x2 cap
+SUB x3 x1 x2
+JZ restartL1
+
+LD x3 tail
+ADD x4 x3 x1
+LD x5 arrSize
+SUB x5 x4 x5
+JL restartL2
+AND x4 x5 x5
+
+restartL2:
+
+//dodati proveru da li je x7 < 0 i x7 + x8 > screeWidth
+
+
+LD x6 px
+ADD x6 x6 x4
+LD x7 x6
+LD x8 pwidth
+
+//dodato 6.12.2024
+
+AND x7 x7 x7
+JG restartWC1
+ADD x8 x7 x8
+XOR x7 x7 x7
+restartWC1:
+LD x20 screenWidht
+ADD x21 x7 x8
+SUB x21 x21 x20
+JL restartWC2
+SUB x8 x20 x7
+restartWC2:
+
+//kraj dodatog 6.12.2024
+
+LD x9 py
+ADD x9 x9 x4
+LD x10 x9
+
+LD x11 dbrush
+XOR x12 x12 x12
+XOR x14 x14 x14
+
+restartL3:
+LD x13 gpus
+AND x13 x13 #1
+JZ restartL3
+
+ST x14 gpudata
+ST x11 gpudata
+
+restartL4:
+LD x13 gpus
+AND x13 x13 #1
+JZ restartL4
+
+ADD x14 x14 #3
+ST x14 gpudata
+ST x7 gpudata
+ST x12 gpudata
+ST x8 gpudata
+ST x10 gpudata
+
+LD x15 pheight
+ADD x12 x15 x10
+LD x16 screenHeight
+SUB x16 x16 x10
+SUB x16 x16 x15
+
+restartL5:
+LD x13 gpus
+AND x13 x13 #1
+JZ restartL5
+
+ST x14 gpudata
+ST x7 gpudata
+ST x12 gpudata
+ST x8 gpudata
+ST x16 gpudata
+
+ADD x1 x1 #1
+JMP restartloop
+
+restartL1:
+
+LD x1 dbrush
+LD x2 bx
+LD x3 by
+LD x4 bwidth
+LD x5 bheight
+XOR x6 x6 x6
+ADD x6 x6 #3
+
+restartL6:
+LD x13 gpus
+AND x13 x13 #1
+JZ restartL6
+
+ST x6 gpudata
+ST x1 gpudata
+ST x2 gpudata
+ST x3 gpudata
+ST x4 gpudata
+ST x5 gpudata
+
+XOR x1 x1 x1
+ADD x2 x1 #5
+ADD x3 x1 #300
+LD x4 MIN_SPEED
+
+ST x3 by
+ST x4 bv
+
+ST x1 head
+ST x1 tail
+ST x1 cap
+
+ST x2 currTime
+
+ST x1 spaceP
+
+JMP retrestart
+
+
+//dodato 6.12.2024
+
+//dodato 16.12.2024
+
+draw:
+
+//brise staru pticu
+
+LD x1 dbrush
+XOR x2 x2 x2
+
+drawbL1:
+
+LD x20 gpus
+AND x20 #1
+JZ drawbL1
+
+ST x2 gpudata
+ST x1 gpudata
+
+LD x2 bx
+LD x3 byp
+LD x4 bwidth
+LD x5 bheight
+XOR x6 x6 x6
+ADD x6 x6 #3
+
+drawbL2:
+
+LD x20 gpus
+AND x20 #1
+JZ drawbL2
+
+ST x6 gpudata
+ST x2 gpudata
+ST x3 gpudata
+ST x4 gpudata
+ST x5 gpudata
+
+//kraj brisanja stare ptice
+
+//stampanej cevi korirano iz reset function sa malom izmenom
+
+XOR x1 x1 x1
+drawloop:
+LD x2 cap
+SUB x3 x1 x2
+JZ drawL1
+
+LD x3 tail
+ADD x4 x3 x1
+LD x5 arrSize
+SUB x5 x4 x5
+JL drawL2
+AND x4 x5 x5
+
+drawL2:
+
+//dodati proveru da li je x7 < 0 i x7 + x8 > screeWidth
+
+
+LD x6 px
+ADD x6 x6 x4
+LD x7 x6
+LD x8 pwidth
+ADD x20 x7 x8
+LD x8 py
+
+//dodato 6.12.2024
+
+AND x7 x7 x7
+JG drawWC1
+ADD x8 x7 x8
+XOR x7 x7 x7
+drawWC1:
+LD x20 screenWidht
+ADD x21 x7 x8
+SUB x21 x21 x20
+JL drawWC2
+SUB x8 x20 x7
+drawWC2:
+
+//kraj dodatog 6.12.2024
+
+LD x9 py
+ADD x9 x9 x4
+LD x10 x9
+
+LD x11 dbrush
+XOR x12 x12 x12
+XOR x14 x14 x14
+
+drawL3:
+LD x13 gpus
+AND x13 x13 #1
+JZ drawL3
+
+ST x14 gpudata
+ST x11 gpudata
+
+drawL4:
+LD x13 gpus
+AND x13 x13 #1
+JZ drawL4
+
+ADD x14 x14 #3
+ST x14 gpudata
+ST x7 gpudata
+ST x12 gpudata
+ST x8 gpudata
+ST x10 gpudata
+
+LD x15 pheight
+ADD x12 x15 x10
+LD x16 screenHeight
+SUB x16 x16 x10
+SUB x16 x16 x15
+
+drawL5:
+LD x13 gpus
+AND x13 x13 #1
+JZ drawL5
+
+ST x14 gpudata
+ST x7 gpudata
+ST x12 gpudata
+ST x8 gpudata
+ST x16 gpudata
+
+//zapravo crtanje cevi prekopirano za greenbruchom
+
+//dodato 6.12.2024
+
+AND x7 x20 x20
+
+AND x7 x7 x7
+JG drawWC3
+ADD x8 x7 x8
+XOR x7 x7 x7
+drawWC3:
+LD x20 screenWidht
+ADD x21 x7 x8
+SUB x21 x21 x20
+JL drawWC4
+SUB x8 x20 x7
+drawWC4:
+
+//kraj dodatog 6.12.2024
+
+LD x9 py
+ADD x9 x9 x4
+LD x10 x9
+
+LD x11 pbrush
+XOR x12 x12 x12
+XOR x14 x14 x14
+
+drawL30:
+LD x13 gpus
+AND x13 x13 #1
+JZ drawL30
+
+ST x14 gpudata
+ST x11 gpudata
+
+drawL40:
+LD x13 gpus
+AND x13 x13 #1
+JZ drawL40
+
+ADD x14 x14 #3
+ST x14 gpudata
+ST x7 gpudata
+ST x12 gpudata
+ST x8 gpudata
+ST x10 gpudata
+
+LD x15 pheight
+ADD x12 x15 x10
+LD x16 screenHeight
+SUB x16 x16 x10
+SUB x16 x16 x15
+
+drawL50:
+LD x13 gpus
+AND x13 x13 #1
+JZ drawL50
+
+ST x14 gpudata
+ST x7 gpudata
+ST x12 gpudata
+ST x8 gpudata
+ST x16 gpudata
+
+//kraj zapravo crtanja cevi
+
+
+ADD x1 x1 #1
+JMP drawloop
+
+drawL1:
+
+LD x1 bbrush
+LD x2 bx
+LD x3 by
+LD x4 bwidth
+LD x5 bheight
+XOR x6 x6 x6
+ADD x6 x6 #3
+
+drawL6:
+LD x13 gpus
+AND x13 x13 #1
+JZ drawL6
+
+ST x6 gpudata
+ST x1 gpudata
+ST x2 gpudata
+ST x3 gpudata
+ST x4 gpudata
+ST x5 gpudata
+
+//kraj stampanja civi
+
+
+
+//kraj dodatog 16.12.2024
+
+
+//prekidna rutina
+
+interupt:
+LD x31 keyboarddata
+SUB x31 x31 #spacekode
+
+JNZ interupt1:
+ADD x31 x31 #1
+ST x31 spaceC
+
+LD x31 playing
+AND x31 x31 x31
+JNZ interupt1
+
+LD x31 startGame
+AND x31 x31 x31
+JNZ interupt1
+
+ADD x31 x31 #1
+ST x31 startGame
+
+interupt1:
+RTI
+
+
+
+
+//kraj prekidne rutine
