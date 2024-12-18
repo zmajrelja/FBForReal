@@ -140,6 +140,8 @@ namespace FBForReal
             if (spaceC && !spaceP) // space == true u prevodjenju
                 bv = MIN_SPEED;
 
+            //moze da pojede input ako se desi prekid u ovom trenutku
+
             spaceP = spaceC; // space = false u prevodjenju
 
             spaceC = false;
@@ -393,13 +395,13 @@ namespace FBForReal
                     g.FillRectangle(pbrush, px[t], py[t] + pheight, pwidth, screenHeight - py[t] - pheight);
                     */
 
-                    
-                    g.FillRectangle(dbrush, px[t] + pwidth, 0, pv, py[t]);
-                    g.FillRectangle(pbrush, px[t]         , 0, pv, py[t]);
 
-                    
-                    g.FillRectangle(dbrush, px[t] + pwidth, py[t] + pheight, pv, screenHeight - py[t] - pheight);
+                    g.FillRectangle(pbrush, px[t]         , 0, pv, py[t]);
+                    g.FillRectangle(dbrush, px[t] + pwidth, 0, pv, py[t]);
+
                     g.FillRectangle(pbrush, px[t]         , py[t] + pheight, pv, screenHeight - py[t] - pheight);
+                    g.FillRectangle(dbrush, px[t] + pwidth, py[t] + pheight, pv, screenHeight - py[t] - pheight);
+                    
                 }
 
                 g.FillRectangle(bbrush, bx, by, bwidth, bheight);
